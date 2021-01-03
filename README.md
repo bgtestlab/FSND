@@ -1,7 +1,4 @@
-# udacity
-Udacity projects
-
-Fyyur:
+# Fyyur
 Download files
 '''
 git clone -b fyyur https://github.com/boramgwon/udacity.git fyyur
@@ -23,4 +20,4 @@ export FLASK_APP=app; export FLASK_ENV=development; flask run
 '''
 
 Verify on the Browser
-Nivigate http://localhost:5000
+Navigate http://localhost:5000
