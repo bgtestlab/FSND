@@ -2,20 +2,36 @@
 {% block title %}New Venue{% endblock %}
 {% block content %}
   <div class="form-wrapper">
-    <form method="post" class="form">
+    <form method="post" class="form" action="{{ url_for('create_venue_submission') }}">
+      {{ form.csrf_token }}
       <h3 class="form-heading">List a new venue <a href="{{ url_for('index') }}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a></h3>
       <div class="form-group">
         <label for="name">Name</label>
         {{ form.name(class_ = 'form-control', autofocus = true) }}
+        {% if form.name.errors %}
+        <span class="errors">
+          {{ form.name.errors }}
+        </span>
+        {% endif %}
       </div>
       <div class="form-group">
           <label>City & State</label>
           <div class="form-inline">
             <div class="form-group">
               {{ form.city(class_ = 'form-control', placeholder='City', autofocus = true) }}
+              {% if form.city.errors %}
+              <span class="errors">
+                {{ form.city.errors }}
+              </span>
+              {% endif %}
             </div>
             <div class="form-group">
               {{ form.state(class_ = 'form-control', placeholder='State', autofocus = true) }}
+              {% if form.state.errors %}
+              <span class="errors">
+                {{ form.state.errors }}
+              </span>
+              {% endif %}
             </div>
           </div>
       </div>
@@ -26,10 +42,20 @@
       <div class="form-group">
           <label for="phone">Phone</label>
           {{ form.phone(class_ = 'form-control', placeholder='xxx-xxx-xxxx', autofocus = true) }}
+          {% if form.phone.errors %}
+          <span class="errors">
+            {{ form.phone.errors }}
+          </span>
+        {% endif %}
         </div>
       <div class="form-group">
         <label for="image_link">Image Link</label>
         {{ form.image_link(class_ = 'form-control', placeholder='http://', autofocus = true) }}
+        {% if form.image_link.errors %}
+          <span class="errors">
+            {{ form.image_link.errors }}
+          </span>
+        {% endif %}
       </div>
       <div class="form-group">
         <label for="genres">Genres</label>
@@ -39,10 +65,20 @@
       <div class="form-group">
         <label for="website">Website</label>
         {{ form.website(class_ = 'form-control', placeholder='https://', autofocus = true) }}
+        {% if form.website.errors %}
+        <span class="errors">
+          {{ form.website.errors }}
+        </span>
+        {% endif %}
       </div>
       <div class="form-group">
           <label for="facebook_link">Facebook Link</label>
           {{ form.facebook_link(class_ = 'form-control', placeholder='https://', autofocus = true) }}
+          {% if form.facebook_link.errors %}
+          <span class="errors">
+            {{ form.facebook_link.errors }}
+          </span>
+          {% endif %}
         </div>
       <div class="form-group">
           <div class="form-check">
