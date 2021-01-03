@@ -157,6 +157,7 @@ p > i {
 .genres {
   margin-bottom: 15px;
 }
+
 span.genre {
   display: inline-block;
   font-family: monospace;
@@ -205,6 +206,9 @@ h2.monospace {
 }
 .form-inline .form-control {
   width: 100%;
+}
+.validators {
+  color: red !important;
 }
 .subtitle {
   opacity: 0.5;
