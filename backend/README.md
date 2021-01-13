@@ -87,6 +87,46 @@ GET '/categories'
 '5' : "Entertainment",
 '6' : "Sports"}
 
+GET '/questions'
+- Fetches a list of questions in which including pagination (every 10 questions). 
+  This endpoint should return a list of questions, number of total questions, current category, categories. 
+- Request Arguments: None
+- Returns: An object with questions, total number of questions, categories and None
+  object of current category. Question object consists of question as string, answer as string, category as integer, diffuclty as integer
+
+DELETE '/questions/<int:question_id>'
+- Remove the question when you click the trash icon next to a question. This removal will persist in the 
+  database and when you refresh the page. 
+- Request Arguments: None
+- Returns: An object with updated questions, total number of questions, categories and None
+  object of current category. 
+
+POST '/questions'
+- Create a new question by recevied the question and answer text, category, and difficulty score on the "Add" 
+  tab. When you submit a question on the "Add" tab, the form will clear and the question will appear at the end of the last page of the questions list in the "List" tab.  
+- Request Arguments: An object with question as string, answer as string, category as integer, difficulty as   
+  integer
+- Returns: None
+
+POST '/questions/search'
+- Update questions list based on a search term if a question has the search term as a substring if the question 
+- Request Arguments: search phrase as string
+- Returns: An object with questions that each has the search term as a substring of the question, 
+  total number of questions, categories and None object of current category. 
+
+GET '/categories/<int:category_id>/questions'
+- Display questions based on category when you click on one of the categories in the left column
+- Request Arguments: None
+- Returns: An object with questions which belongs to the chosen category, total number of questions, categories
+  and None object of current category. 
+
+POST 'quizzes'
+- Play the quiz by using chosen category once an user select "All" or a category in the "Play" tab. 
+  One question which was randomly chosen at a time is displayed, the user is allowed to answer and shown whether they were correct or not. Next question is not one of the previous questions. 
+- Request Arguments: Id of category as integer and id of previous questions as list
+- Returns: An new randomly chosen Question object
+
+
 ```
 
 
@@ -95,6 +135,6 @@ To run the tests, run
 ```
 dropdb trivia_test
 createdb trivia_test
-psql trivia_test < trivia.psql
-python test_flaskr.py
+psql -d trivia_test -U your_db_user -a -f trivia.psql
+python3 test_flaskr.py
 ```
