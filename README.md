@@ -14,6 +14,12 @@ Run the postgreSQL server
 sudo service postgresql start
 '''
 
+Database Setup
+'''
+createdb fyyur
+psql -d fyyur -a -f fyyur.psql
+'''
+
 Run the development server
 '''
 export FLASK_APP=app; export FLASK_ENV=development; flask run
