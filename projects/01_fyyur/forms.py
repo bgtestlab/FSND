@@ -438,7 +438,7 @@ class ArtistForm(Form):
     )
     genres = SelectMultipleField(
         'genres', 
-        validators=[DataRequired()],
+        validators=[DataRequired(message='genres required')],
         choices=[
             ('Alternative', 'Alternative'),
             ('Blues', 'Blues'),

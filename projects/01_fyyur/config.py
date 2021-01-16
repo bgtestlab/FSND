@@ -10,4 +10,9 @@ DEBUG = True
 
 
 # TODO IMPLEMENT DATABASE URL
-SQLALCHEMY_DATABASE_URI = 'postgres://udacity@localhost:5432/fyyur'
+DATABASE_NAME = 'fyyur'
+#SQLALCHEMY_DATABASE_URI = 'postgres://udacity@localhost:5432/fyyur'
+SQLALCHEMY_DATABASE_URI = 'postgres://{}/{}'.format('localhost:5432', DATABASE_NAME)
+
+# Suppress warnings
+SQLALCHEMY_TRACK_MODIFICATIONS = False
