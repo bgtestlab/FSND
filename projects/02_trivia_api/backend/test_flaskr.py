@@ -20,13 +20,13 @@ class TriviaTestCase(unittest.TestCase):
         setup_db(self.app, self.database_path)
 
         self.new_question = {
-            'question': 'What was the name of school which is a fictional British boarding school of magic in Harry Potter series',
+            'question': 'What was the name of a fictional British boarding school of magic in Harry Potter',
             'answer': 'Hogwarts',
             'category': 5,
             'difficulty': 2}
 
         self.new_question_wrong_type = {
-            'question': 'What was the name of school which is a fictional British boarding school of magic in Harry Potter series',
+            'question': 'What was the name of a fictional British boarding school of magic in Harry Potter',
             'answer': 'Hogwarts',
             'category': 'Entertainment',
             'difficulty': 2}
@@ -51,8 +51,6 @@ class TriviaTestCase(unittest.TestCase):
             }
 
         }
-        #     category = body.get('quiz_category', None)
-#     previous_questions = body.get('previous_questions', None)
 
         # binds the app to the current context
         with self.app.app_context():
@@ -95,17 +93,17 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
 
     def test_delete_question(self):
-        res = self.client().delete('/questions/10')
+        res = self.client().delete('/questions/9')
         data = json.loads(res.data)
 
-        question = Question.query.filter(Question.id == 10).one_or_none()
+        question = Question.query.filter(Question.id == 9).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertTrue(len(data['questions']))
         self.assertTrue(data['total_questions'])
         self.assertTrue(len(data['categories']))
-        self.assertEqual(data['current_category'], None)
+        self.assertTrue(data['current_category'])
 
     def test_422_if_non_existing_question_deletion_fails(self):
         res = self.client().delete('/questions/100')

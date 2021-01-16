@@ -1,6 +1,12 @@
 import os
-from flask import Flask, request, abort, jsonify
+from flask import (
+    Flask,
+    request,
+    abort,
+    jsonify
+)
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func, select
 from flask_cors import CORS
 import random
 
@@ -116,6 +122,7 @@ def create_app(test_config=None):
 
             return jsonify({
                 'success': True,
+                'deleted_id': question_id,
                 'questions': current_questions,
                 'total_questions': len(Question.query.all()),
                 'categories': formatted_categories,
@@ -242,31 +249,22 @@ def create_app(test_config=None):
         category = body.get('quiz_category', None)
         previous_questions = body.get('previous_questions', None)
 
-        # query cateogorized questions
-        if previous_questions:
-            if category['id'] == 0:
-                questions = Question.query.filter(
-                    Question.id.notin_((previous_questions))).all()
-            else:
-                questions = Question.query.filter_by(
-                    category=category['id']).filter(
-                    Question.id.notin_(
-                        (previous_questions))).all()
+        if category['id'] == 0:
+            question = Question.query.filter(
+                Question.id.notin_(
+                    (previous_questions))).order_by(
+                func.random()).first()
         else:
-            if category['id'] == 0:
-                questions = Question.query.all()
-            else:
-                questions = Question.query.filter_by(
-                    category=category['id']).all()
+            question = Question.query.filter_by(
+                category=category['id']).filter(
+                Question.id.notin_(
+                    (previous_questions))).order_by(
+                func.random()).first()
 
-        # pick up a question randomly
-        if questions:
-            formatted_questions = [question.format() for question in questions]
-            selection = random.choice(formatted_questions)
-
+        if question:
             return jsonify({
                 'success': True,
-                'question': selection
+                'question': question.format()
             })
         else:
             return jsonify({
