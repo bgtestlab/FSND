@@ -93,6 +93,7 @@ GET '/questions'
 - Request Arguments: None
 - Returns: An object with questions, total number of questions, categories and None
   object of current category. Question object consists of question as string, answer as string, category as integer, diffuclty as integer
+  [{'id': 2, 'question': 'What movie earned Tom Hanks his third straight Oscar nomination, in 1996?', 'answer': 'Apollo 13', 'category': 5, 'difficulty': 4}]
 
 DELETE '/questions/<int:question_id>'
 - Remove the question when you click the trash icon next to a question. This removal will persist in the 
@@ -104,8 +105,8 @@ DELETE '/questions/<int:question_id>'
 POST '/questions'
 - Create a new question by recevied the question and answer text, category, and difficulty score on the "Add" 
   tab. When you submit a question on the "Add" tab, the form will clear and the question will appear at the end of the last page of the questions list in the "List" tab.  
-- Request Arguments: An object with question as string, answer as string, category as integer, difficulty as   
-  integer
+- Request Arguments: An object with question as string, answer as string, category as integer, difficulty as integer
+{'question': "What boxer's original name is Cassius Clay?", 'answer': 'Muhammad Ali', 'category': 4, 'difficulty': 1}
 - Returns: None
 
 POST '/questions/search'
