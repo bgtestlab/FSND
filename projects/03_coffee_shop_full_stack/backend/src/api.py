@@ -34,8 +34,13 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
+@requires_auth()
 @app.route('/drinks')
-def get_drinks():
+def get_drinks(user):
+    if('get:drinks' not in user.permissions):
+        print('get:drinks permisson error')
+        abort(403)
+
     data = Drink.query.all()
 
     if data:
@@ -55,7 +60,12 @@ def get_drinks():
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks-detail')
-def drink_details():
+@requires_auth()
+def drink_details(user):
+    if('get:drinks-detail' not in user.permissions):
+        print('get:drinks-detail permisson error')
+        abort(403)
+
     data = Drink.query.all()
 
     if data:
@@ -76,7 +86,12 @@ def drink_details():
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks', methods=['POST'])
-def add_drink():
+@requires_auth()
+def post_drinks(user):
+    if('post:drinks' not in user.permissions):
+        print('post:drinks permisson error')
+        abort(403)
+
     body = request.get_json()
     req_title = body.get('title')
     req_recipe = body.get('recipe')
@@ -108,7 +123,12 @@ def add_drink():
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks/<int:drink_id>', methods=['PATCH'])
-def modify_drink(drink_id):
+@requires_auth()
+def modify_drink(user, drink_id):
+    if('patch:drinks' not in user.permissions):
+        print('patch:drinks permisson error')
+        abort(403)
+
     try:
         drink = Drink.query.filter(
             Drink.id == drink_id).one_or_none()
@@ -140,7 +160,11 @@ def modify_drink(drink_id):
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks/<int:drink_id>', methods=['DELETE'])
-def delete_drink(drink_id):
+@requires_auth()
+def delete_drink(user, drink_id):
+    if('delete:drinks' not in user.permissions):
+        print('delete:drinks permisson error')
+        abort(403)
     try:
         drink = Drink.query.filter(
             Drink.id == drink_id).one_or_none()
