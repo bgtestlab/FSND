@@ -1,17 +1,18 @@
-import os, sys
+import os
+import sys
 from flask import (
-Flask, 
-request, 
-jsonify, 
-abort
+    Flask,
+    request,
+    jsonify,
+    abort
 )
 from sqlalchemy import exc
 import json
 from flask_cors import CORS
 from .database.models import (
-db_drop_and_create_all, 
-setup_db, 
-Drink
+    db_drop_and_create_all,
+    setup_db,
+    Drink
 )
 from .auth.auth import AuthError, requires_auth
 
@@ -20,13 +21,13 @@ setup_db(app)
 CORS(app)
 
 '''
-@TODO uncomment the following line to initialize the datbase
+@TODO uncomment the following line to initialize the database
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 '''
-#db_drop_and_create_all()
+# db_drop_and_create_all()
 
-## ROUTES
+# ROUTES
 '''
     GET /drinks
         it should be a public endpoint
@@ -34,9 +35,8 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
-@requires_auth(permission='get:drinks')
 @app.route('/drinks')
-def get_drinks(payload):
+def get_drinks():
     data = Drink.query.all()
 
     if data:
@@ -47,6 +47,7 @@ def get_drinks(payload):
         })
     else:
         abort(404)
+
 
 '''
     GET /drinks-detail
@@ -69,6 +70,7 @@ def drink_details(payload):
     else:
         abort(404)
 
+
 '''
     POST /drinks
         it should create a new row in the drinks table
@@ -90,7 +92,7 @@ def post_drinks(payload):
             recipe=json.dumps(req_recipe)
         )
         drink.insert()
-        
+
         return jsonify({
             "success": True,
             "drinks": drink.long()
@@ -98,6 +100,7 @@ def post_drinks(payload):
     except BaseException:
         print(sys.exc_info())
         abort(422)
+
 
 '''
 @TODO implement endpoint
@@ -118,7 +121,7 @@ def modify_drink(payload, drink_id):
             Drink.id == drink_id).one_or_none()
 
         if drink is None:
-            abort(404)       
+            abort(404)
 
         body = request.get_json()
         req_title = body.get('title')
@@ -129,10 +132,11 @@ def modify_drink(payload, drink_id):
         return jsonify({
             "success": True,
             "drinks": drink.long()
-        })   
+        })
     except BaseException:
         print(sys.exc_info())
         abort(422)
+
 
 '''
     DELETE /drinks/<id>
@@ -154,15 +158,15 @@ def delete_drink(payload, drink_id):
             abort(404)
 
         drink.delete()
-        
+
         return jsonify({
             "success": True,
             "delete": drink_id
         })
     except BaseException:
-        abort(422)  
+        abort(422)
 
-## Error Handling
+# Error Handling
 @app.errorhandler(422)
 def unprocessable(error):
     return jsonify({
@@ -170,6 +174,7 @@ def unprocessable(error):
         "error": 422,
         "message": "unprocessable"
     }), 422
+
 
 @app.errorhandler(404)
 def not_found(error):
@@ -179,6 +184,7 @@ def not_found(error):
         "message": "resource not found"
     }), 404
 
+
 @app.errorhandler(400)
 def bad_request(error):
     return jsonify({
@@ -187,8 +193,14 @@ def bad_request(error):
         "message": "bad request"
     }), 400
 
-
 '''
-@TODO implement error handler for AuthError
-    error handler should conform to general task above 
+@ error handler for AuthError
+    error handler should conform to general task above
 '''
+@app.errorhandler(AuthError)
+def unauthorized(error):
+    return jsonify({
+        "success": False,
+        "error": 401,
+        "message": "unauthorized"
+    }), 401

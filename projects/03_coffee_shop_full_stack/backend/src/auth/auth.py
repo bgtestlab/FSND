@@ -32,15 +32,26 @@ class AuthError(Exception):
 '''
 def get_token_auth_header():
     if 'Authorization' not in request.headers:
-        raise AuthError()
+        raise AuthError({
+            'code': 'unauthroization',
+            'description': 'Authorization malformed.'
+        }, 401)
 
     auth_header = request.headers['Authorization']
     header_parts = auth_header.split(' ')
 
     if len(header_parts) != 2:
-        raise AuthError()
+        raise AuthError({
+            'code': 'unauthroization',
+            'description': 'Authorization malformed.'
+        }, 401)
+
     elif header_parts[0].lower() != 'bearer':
-        raise AuthError()
+        raise AuthError({
+            'code': 'unauthroization',
+            'description': 'Authorization malformed.'
+        }, 401)
+
 
     return header_parts[1]
 
@@ -118,12 +129,28 @@ def verify_decode_jwt(token):
 
             return payload
 
+        # Token is expired
         except jwt.ExpiredSignatureError:
             raise AuthError({
                 'code': 'token_expired',
                 'description': 'Token expired.'
             }, 401)
 
+        # Token is invalid
+        except jwt.InvalidTokenError:
+            raise AuthError({
+                'code': 'token_invalid',
+                'description': 'Token invalid.'
+            }, 401)
+
+        # Token cannot be decoded
+        except jwt.DecodeError:
+            raise AuthError({
+                'code': 'token_not_decoded',
+                'description': 'Token cannot be decoded.'
+            }, 401)   
+
+        # The claims are invalid
         except jwt.JWTClaimsError:
             raise AuthError({
                 'code': 'invalid_claims',
