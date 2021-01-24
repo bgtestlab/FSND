@@ -34,13 +34,9 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
-@requires_auth()
+@requires_auth(permission='get:drinks')
 @app.route('/drinks')
-def get_drinks(user):
-    if('get:drinks' not in user.permissions):
-        print('get:drinks permisson error')
-        abort(403)
-
+def get_drinks(payload):
     data = Drink.query.all()
 
     if data:
@@ -60,12 +56,8 @@ def get_drinks(user):
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks-detail')
-@requires_auth()
-def drink_details(user):
-    if('get:drinks-detail' not in user.permissions):
-        print('get:drinks-detail permisson error')
-        abort(403)
-
+@requires_auth(permission='get:drinks-detail')
+def drink_details(payload):
     data = Drink.query.all()
 
     if data:
@@ -86,12 +78,8 @@ def drink_details(user):
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks', methods=['POST'])
-@requires_auth()
-def post_drinks(user):
-    if('post:drinks' not in user.permissions):
-        print('post:drinks permisson error')
-        abort(403)
-
+@requires_auth(permission='post:drinks')
+def post_drinks(payload):
     body = request.get_json()
     req_title = body.get('title')
     req_recipe = body.get('recipe')
@@ -123,12 +111,8 @@ def post_drinks(user):
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks/<int:drink_id>', methods=['PATCH'])
-@requires_auth()
-def modify_drink(user, drink_id):
-    if('patch:drinks' not in user.permissions):
-        print('patch:drinks permisson error')
-        abort(403)
-
+@requires_auth(permission='patch:drinks')
+def modify_drink(payload, drink_id):
     try:
         drink = Drink.query.filter(
             Drink.id == drink_id).one_or_none()
@@ -160,11 +144,8 @@ def modify_drink(user, drink_id):
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks/<int:drink_id>', methods=['DELETE'])
-@requires_auth()
-def delete_drink(user, drink_id):
-    if('delete:drinks' not in user.permissions):
-        print('delete:drinks permisson error')
-        abort(403)
+@requires_auth(permission='delete:drinks')
+def delete_drink(payload, drink_id):
     try:
         drink = Drink.query.filter(
             Drink.id == drink_id).one_or_none()
