@@ -87,6 +87,9 @@ def post_drinks(payload):
     req_recipe = body.get('recipe')
 
     try:
+        if isinstance(req_recipe, dict):
+            req_recipe = [req_recipe]
+
         drink = Drink(
             title=req_title,
             recipe=json.dumps(req_recipe)
