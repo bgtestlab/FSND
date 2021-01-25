@@ -38,15 +38,15 @@ CORS(app)
 @app.route('/drinks')
 def get_drinks():
     data = Drink.query.all()
+    drinks = []
 
     if data:
         drinks = [drink.short() for drink in data]
-        return jsonify({
-            "success": True,
-            "drinks": drinks
-        })
-    else:
-        abort(404)
+
+    return jsonify({
+        "success": True,
+        "drinks": drinks
+    })
 
 
 '''
@@ -60,15 +60,15 @@ def get_drinks():
 @requires_auth(permission='get:drinks-detail')
 def drink_details(payload):
     data = Drink.query.all()
+    drinks = []
 
     if data:
-        drinks = [drink.long() for drink in data]
-        return jsonify({
-            "success": True,
-            "drinks": drinks
-        })
-    else:
-        abort(404)
+        drinks = [drink.short() for drink in data]
+
+    return jsonify({
+        "success": True,
+        "drinks": drinks
+    })
 
 
 '''
@@ -134,7 +134,7 @@ def modify_drink(payload, drink_id):
 
         return jsonify({
             "success": True,
-            "drinks": drink.long()
+            "drinks": [drink.long()]
         })
     except BaseException:
         print(sys.exc_info())
@@ -195,6 +195,7 @@ def bad_request(error):
         "error": 400,
         "message": "bad request"
     }), 400
+
 
 '''
 @ error handler for AuthError
