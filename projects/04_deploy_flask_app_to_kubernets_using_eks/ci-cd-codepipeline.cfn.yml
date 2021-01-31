@@ -17,7 +17,7 @@ Parameters:
   GitSourceRepo:
     Type: String
     Description: GitHub source repository - must contain a Dockerfile and buildspec.yml in the base
-    Default: 
+    Default: https://github.com/boramgwon/udacity/tree/master/projects/04_deploy_flask_app_to_kubernets_using_eks
     MinLength: 1
     MaxLength: 100
     ConstraintDescription: You must enter a GitHub repository name
