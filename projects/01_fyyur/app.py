@@ -67,20 +67,20 @@ def venues():
     # num_shows should be aggregated based on number of upcoming shows per venue.
     # make groups by city, state and then use them as filters to create
     # required data set
-    data = []
-    groups = db.session.query(
-        Venue.city,
-        Venue.state).group_by(
-        Venue.city,
-        Venue.state)
 
-    for group in groups:
-        venues = Venue.query.filter_by(
-            city=group.city, state=group.state).all()
-        data.append(
-            {'city': group.city, 'state': group.state, 'venues': venues})
-    return render_template('pages/venues.html', areas=data)
-
+    locals = []
+    venues = Venue.query.all()
+    for place in Venue.query.distinct(Venue.city, Venue.state).all():
+        locals.append({
+            'city': place.city,
+            'state': place.state,
+            'venues': [{
+                'id': venue.id,
+                'name': venue.name,
+            } for venue in venues if
+                venue.city == place.city and venue.state == place.state]
+        })
+    return render_template('pages/venues.html', areas=locals)
 
 @app.route('/venues/search', methods=['POST'])
 def search_venues():
@@ -111,56 +111,24 @@ def show_venue(venue_id):
     # seach for Hop should return "The Musical Hop".
     # search for "Music" should return "The Musical Hop" and "Park Square Live
     # Music & Coffee"
+
     venue = Venue.query.get(venue_id)
-    show_venue = {
-        'id': venue.id,
-        'name': venue.name,
-        'genres': venue.genres,
-        'address': venue.address,
-        'city': venue.city,
-        'state': venue.state,
-        'phone': venue.phone,
-        'website': venue.website,
-        'facebook_link': venue.facebook_link,
-        'seeking_talent': venue.seeking_talent,
-        'seeking_description': venue.seeking_description,
-        'image_link': venue.image_link,
-        'past_shows_count': 0,
-        'upcoming_shows_count': 0
-    }
 
-    # query shows data by venue id filter and then set them either past shows or upcoming shows
-    # based on comparision with current time
-    past_shows = []
-    upcoming_shows = []
-    current_time = datetime.now()
-    shows = db.session.query(
-        Artist.id.label('artist_id'),
-        Artist.name.label('artist_name'),
-        Artist.image_link.label('artist_image_link'),
-        Show.start_time.label('start_time')).join(Show).filter(
-        Show.venue_id == venue_id).all()
+    past_shows = list(filter(lambda x: x.start_time < datetime.today(), venue.shows))
+    upcoming_shows = list(filter(lambda x: x.start_time >= datetime.today(), venue.shows))
 
-    shows_count = len(shows)
+    past_shows = list(map(lambda x: x.show_artist(), past_shows))
+    upcoming_shows = list(map(lambda x: x.show_artist(), upcoming_shows))
 
-    if(shows_count):
-        for show in shows:
-            start_time = datetime.strptime(
-                show.start_time, '%Y-%m-%d %H:%M:%S')
+    data = venue.format()
 
-            if(current_time > start_time):
-                past_shows.append(show)
-            else:
-                upcoming_shows.append(show)
+    data['past_shows'] = past_shows
+    data['past_shows_count'] = len(past_shows)
 
-        show_venue.update({
-            'past_shows': past_shows,
-            'upcoming_shows': upcoming_shows,
-            'past_shows_count': len(past_shows),
-            'upcoming_shows_count': len(upcoming_shows)
-        })
+    data['upcoming_shows'] = upcoming_shows
+    data['upcoming_shows_count'] = len(upcoming_shows)
 
-    return render_template('pages/show_venue.html', venue=show_venue)
+    return render_template('pages/show_venue.html', venue=data)
 
 #  Create Venue
 #  ----------------------------------------------------------------
@@ -649,4 +617,4 @@ if not app.debug:
 
 # Default port:
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', debug=True)

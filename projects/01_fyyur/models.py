@@ -30,6 +30,23 @@ class Venue(db.Model):
   seeking_description = db.Column(db.String(120))
   shows = db.relationship('Show', backref='venue_shows', cascade='all, delete-orphan', passive_deletes=True)
 
+  def format(self):
+    return {
+      'id': self.id,
+      'name': self.name,
+      'genres': self.genres,
+      'address': self.address,
+      'city': self.city,
+      'state': self.state,
+      'phone': self.phone,
+      'website': self.website,
+      'facebook_link': self.facebook_link,
+      'seeking_talent': self.seeking_talent,
+      'seeking_description': self.seeking_description,
+      'image_link': self.image_link
+  }
+
+
 class Artist(db.Model):
   __tablename__ = 'artists'
 
