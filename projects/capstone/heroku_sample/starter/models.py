@@ -1,8 +1,11 @@
-from sqlalchemy import Column, String, create_engine
-from flask_sqlalchemy import SQLAlchemy
+import os
 import json
+from sqlalchemy import Column, String, Integer, create_engine
+from flask_sqlalchemy import SQLAlchemy
 
-database_path = os.environ['DATABASE_URL']
+database_address = os.environ['DATABASE_ADDRESS']
+database_name = os.environ['DATABASE_NAME']
+database_path = 'postgres://{}/{}'.format(database_address, database_name)
 
 db = SQLAlchemy()
 
