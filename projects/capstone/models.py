@@ -1,5 +1,5 @@
 import os, json
-from sqlalchemy import Column, String, Integer, Boolean, create_engine
+from sqlalchemy import Column, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
 
 database_address = os.environ['DATABASE_ADDRESS']
@@ -29,7 +29,7 @@ class Actor(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     age = Column(Integer, nullable=False)
-    gender = Column(Boolean, nullable=False)
+    gender = Column(String, nullable=False)
 
     def insert(self):
         db.session.add(self)
