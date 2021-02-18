@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 # Get the path to the directory this file is in
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
-# Connect the path with the '.env' file name 
+# Connect the path with the '.env' file name
 load_dotenv(os.path.join(BASEDIR, '.env'))
 AUTH0_DOMAIN = os.getenv('domain')
 ALGORITHMS = os.getenv('algorithms')
